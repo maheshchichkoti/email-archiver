@@ -1,0 +1,50 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model OAuthToken {
+  id            Int       @id @default(autoincrement())
+  access        String    // Stores the access token
+  refresh       String    // Stores the REFRESH TOKEN (MUST BE ENCRYPTED IN YOUR CODE BEFORE SAVING)
+  expiry        DateTime  // Expiry date of the access token
+  lastHistoryId String?   // STORES THE LAST PROCESSED GMAIL HISTORY ID FOR RELIABLE SYNCING (CRITICAL ADDITION)
+  createdAt     DateTime  @default(now())
+  // Consider adding a userId or accountIdentifier if this ever needs to support multiple accounts
+  // For a single G-Suite inbox as per assessment, id: 1 is fine.
+}
+
+model Email {
+  id           Int          @id @default(autoincrement())
+  gmailId      String       @unique // Gmail's unique ID for the message
+  threadId     String       // Gmail's thread ID
+  subject      String?
+  from         String?      // Raw "From" header
+  to           String?      // Raw "To" header (can contain multiple addresses)
+  cc           String?      // Raw "Cc" header (can contain multiple addresses)
+  bcc          String?      // Raw "Bcc" header (not always available via API, often only for sender)
+  messageId    String?      @unique // Message-ID header, good for deduplication
+  body         String?      // Parsed email body (HTML or plain text)
+  inReplyTo    String?      // In-Reply-To header for threading
+  references   String?      // References header for threading
+  internalDate DateTime     // Gmail's internal date for the message (when it was received/processed by Gmail)
+  createdAt    DateTime     @default(now()) // When this record was created in our DB
+
+  attachments  Attachment[]
+}
+
+model Attachment {
+  id        Int      @id @default(autoincrement())
+  filename  String
+  mimeType  String
+  driveId   String   // Google Drive File ID
+  driveUrl  String   // Google Drive webViewLink
+  createdAt DateTime @default(now())
+
+  emailId   Int
+  email     Email    @relation(fields: [emailId], references: [id], onDelete: Cascade)
+}

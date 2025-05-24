@@ -1,0 +1,44 @@
+{
+  "name": "email-archiver",
+  "version": "1.0.0",
+  "description": "Gmail → PostgreSQL + Google Drive integration for email archiving",
+  "main": "index.js",
+  "scripts": {
+    "dev": "ts-node-dev src/index.ts",
+    "sync": "ts-node src/jobs/syncGmail.ts",
+    "migrate": "prisma migrate dev",
+    "test": "jest",
+    "build": "tsc"
+  },
+  "keywords": [
+    "gmail",
+    "archive",
+    "googleapis",
+    "email-management"
+  ],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "dependencies": {
+    "@prisma/client": "^6.8.2",
+    "cors": "^2.8.5",
+    "dotenv": "^16.5.0",
+    "express": "^5.1.0",
+    "googleapis": "^149.0.0",
+    "html-entities": "^2.6.0",
+    "mailparser": "^3.7.3",
+    "node-cron": "^4.0.7",
+    "prisma": "^6.8.2"
+  },
+  "devDependencies": {
+    "@types/cors": "^2.8.18",
+    "@types/express": "^5.0.2",
+    "@types/jest": "^29.5.14",
+    "@types/node": "^22.15.21",
+    "@types/node-cron": "^3.0.11",
+    "jest": "^29.7.0",
+    "ts-jest": "^29.3.4",
+    "ts-node-dev": "^2.0.0",
+    "typescript": "^5.8.3"
+  }
+}
